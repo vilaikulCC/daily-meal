@@ -1,0 +1,128 @@
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+@font-face {
+    font-family: 'Bai Jamjuree';
+    src: url('../fonts/BaiJamjuree-Regular.ttf') format('truetype');
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Bai Jamjuree SemiBold';
+    src: url('../fonts/BaiJamjuree-SemiBold.ttf') format('truetype');
+    font-style: bold;
+}
+
+@font-face {
+    font-family: 'Bai Jamjuree Bold';
+    src: url('../fonts/BaiJamjuree-Bold.ttf') format('truetype');
+    font-style: bolder;
+}
+
+:root {
+    --PrimaryColor: #db6e11;
+    --SecondaryColor: #58514b;
+    --InitialColor: #2b2b2b;
+    --WhiteColor: #ffffff;
+    --lightColor: #fff7f0;
+}
+
+html {
+    overflow: auto;
+}
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+    font-size: 16px;
+    font-family: 'Bai Jamjuree', sans-serif;
+    color: var(--InitialColor);
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+h1 {
+    font-size: 38px;
+    font-family: 'Bai Jamjuree Bold', sans-serif;
+    line-height: 1.5em;
+}
+h2 {
+    font-size: 30px;
+    font-family: 'Bai Jamjuree Bold', sans-serif;
+    line-height: 1.25em;
+
+}
+h3 {
+    font-size: 24px;
+    font-family: 'Bai Jamjuree Bold', sans-serif;
+    line-height: 1.25em;
+}
+h4 {
+    font-size: 21px;
+    font-family: 'Bai Jamjuree Bold', sans-serif;
+    line-height: 1.25em;
+}
+h5 {
+    font-size: 18px;
+    font-family: 'Bai Jamjuree Bold', sans-serif;
+    line-height: 1.25em;
+}
+h6 {
+    font-size: 16px;
+    font-family: 'Bai Jamjuree Bold', sans-serif;
+    line-height: 1em;
+}
+label {
+    font-size: 16px;
+    font-family: 'Bai Jamjuree SemiBold', sans-serif;
+    line-height: 1em;
+}
+p,span {
+    font-size: 16px;
+    font-family: 'Bai Jamjuree', sans-serif;
+    line-height: 1em;
+}
+
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+}

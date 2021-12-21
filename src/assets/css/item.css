@@ -1,0 +1,20 @@
+
+.grid-list {
+    
+}
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    background: var(--lightColor);
+}
+.item-list {
+    display: flex;
+    justify-content: space-around;
+    text-align: left;
+}
+.item-header div,
+.item-list div {
+    flex: auto;
+    padding: 15px;
+}
