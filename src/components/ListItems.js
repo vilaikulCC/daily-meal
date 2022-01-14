@@ -1,22 +1,8 @@
 import "../assets/css/item.css";
-
 import Item from "./Item";
-const ListItems = () => {
-  const data = [
-    {
-      id: 1,
-      date: "20/12/2021",
-      breakfast: "rice and fish",
-      lunch: "Spagetti",
-      dinner: "noodle",
-      exercise: "squrt 7 mins",
-      weight: "",
-      waist: "",
-      thigh: "",
-      kcal: "",
-    },
-  ];
 
+const ListItems = (props) => {
+  const {items} = props
   return (
     <div className="grid-list">
       <div className="item-header">
@@ -39,11 +25,9 @@ const ListItems = () => {
           <h5>Action</h5>
         </div>
       </div>
-      <div className="item-list">
-        {data.map((el) => {
-          return <Item {...el} key={el.id} />;
+        {items.map((el) => {
+          return <div className="item-list" key = {el.id} data-id={el.id}><Item {...el} key = {el.id} /></div>;
         })}
-      </div>
     </div>
   );
 };

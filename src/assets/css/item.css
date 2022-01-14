@@ -6,7 +6,7 @@
     display: flex;
     justify-content: space-between;
     text-align: center;
-    background: var(--lightColor);
+    background: var(--light-color);
 }
 .item-list {
     display: flex;
@@ -15,6 +15,15 @@
 }
 .item-header div,
 .item-list div {
-    flex: auto;
+    flex: 1;
     padding: 15px;
+}
+
+.item-list .col-action {  
+    display: flex;
+    justify-content: space-around;
+}   
+
+.item-list .col-action button {
+    
 }

@@ -21,11 +21,17 @@
 }
 
 :root {
-    --PrimaryColor: #db6e11;
-    --SecondaryColor: #58514b;
-    --InitialColor: #2b2b2b;
-    --WhiteColor: #ffffff;
-    --lightColor: #fff7f0;
+    --primary-color: #db6e11;
+    --primary-lighter-color: #ec8123;
+    --primary-darker-color: #c96106;
+    --secondary-color: #58514b;
+    --secondary-lighter-color: #69625c;
+    --secondary-darker-color: #423b35;
+    --initial-color: #2b2b2b;
+    --white-color: #ffffff;
+    --light-color: #fff7f0;
+    --background-color: #f1f1f1;
+    --background-color: #f1f1f1;
 }
 
 html {
@@ -60,7 +66,7 @@ body {
 	line-height: 1;
     font-size: 16px;
     font-family: 'Bai Jamjuree', sans-serif;
-    color: var(--InitialColor);
+    color: var(--initial-color);
 }
 ol, ul {
 	list-style: none;
@@ -79,12 +85,12 @@ table {
 }
 
 h1 {
-    font-size: 38px;
+    font-size: 27px;
     font-family: 'Bai Jamjuree Bold', sans-serif;
     line-height: 1.5em;
 }
 h2 {
-    font-size: 30px;
+    font-size: 32px;
     font-family: 'Bai Jamjuree Bold', sans-serif;
     line-height: 1.25em;
 
@@ -120,9 +126,47 @@ p,span {
     line-height: 1em;
 }
 
+#header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
 
 .section-title {
     display: flex;
     justify-content: space-between;
     padding: 15px;
+}
+
+.btn {
+    height: 40px;
+    font-size: 1rem;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 0;
+    margin-left: 15px;
+}
+.btn.btn-default {
+    color: var(--white-color);
+    background-color: var(--secondary-color);
+    border: 2px solid var(--secondary-color);
+}
+.btn.btn-submit {
+    color: var(--white-color);
+    background-color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-default:hover {
+    cursor: pointer;
+    background-color: var(--secondary-darker-color);
+}
+
+.btn-submit:hover {
+    cursor: pointer;
+    background-color: var(--primary-darker-color);
+}
+
+.btn span {
+    padding-left: 5px;
 }

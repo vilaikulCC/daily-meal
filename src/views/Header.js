@@ -1,8 +1,8 @@
 const Header =() => {
     return (
-        <nav className="">
+        <header id="header">
             <div><h1>Daily Meal by Chommade</h1></div>
-        </nav>
+        </header>
     )
 }
 
