@@ -1,10 +1,12 @@
 import "../assets/css/form.css";
-import { useState } from "react";
+import { useState, useEffect, useContext, useReducer } from "react";
 import DatePicker from "react-datepicker";
-// import { registerLocale } from  "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+// import { registerLocale } from  "react-datepicker";
 // import th from 'date-fns/locale/th';
 // registerLocale('th', th)
+import { DataContext } from "../data/DataContext";
+import { db } from "../firebase";
 
 const FormItem = (props) => {
   const [selDate, setDate] = useState(new Date());
@@ -12,6 +14,8 @@ const FormItem = (props) => {
   const [lunch, setLunch] = useState("");
   const [dinner, setDinner] = useState("");
   const [exercise, setExercise] = useState("");
+  const [formValidate, setFormValidate] = useState(false);
+  // const meal = useContext(DataContext);
 
   const handleInput = (e) => {
     const target = e.target;
@@ -42,24 +46,68 @@ const FormItem = (props) => {
     setExercise("");
   };
 
-  const saveItem = (e) => {
+  const [result, dispatch] = useReducer();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const itemData = {
-      id: 4,
-      date: selDate,
-      breakfast: breakfast,
-      lunch: lunch,
-      dinner: dinner,
-      exercise: exercise,
-    };
-    props.onAddItem(itemData);
-    console.log("Success");
-    clearData();
+    let lastId = 0;
+    await db
+      .collection("activity")
+      .orderBy("id", "desc")
+      .limit(1)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          lastId = doc.data().id;
+          console.log(doc.data().id);
+        });
+      });
+    console.log("lastId = ", lastId);
+    // let lastId = meal.item.length > 0 ? meal.item[meal.item.length - 1].id : 0;
+    // console.log( "lastId = ",lastId)
+
+    // if (!formValidate) {
+      const itemData = {
+        id: lastId + 1,
+        date: selDate,
+        breakfast: breakfast,
+        lunch: lunch,
+        dinner: dinner,
+        exercise: exercise,
+      };
+      await db
+        .collection("activity")
+        .add({
+          ...itemData,
+        })
+        .then((docRef) => {
+          console.log("Document written with ID: ", docRef.id);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // props.fetchNewData();
+
+      console.log("Success", itemData);
+      clearData();
+      alert("Successfully !!");
+      props.onCloseModal();
+    // } else {
+    //   alert("Please enter data !!");
+    // }
   };
+
+  // useEffect(() => {
+  //   const checkData =
+  //     breakfast.trim().length > 0 &&
+  //     lunch.trim().length > 0 &&
+  //     dinner.trim().length > 0 &&
+  //     exercise.trim().length > 0;
+  //   setFormValidate(checkData);
+  // }, [breakfast, lunch, dinner, exercise]);
 
   return (
     <div className="frame-form">
-      <form id="form_meal" onSubmit={saveItem}>
+      <form id="form_meal" onSubmit={handleSubmit}>
         <div className="form-control">
           <label>Date</label>
           <DatePicker
@@ -80,6 +128,7 @@ const FormItem = (props) => {
             maxLength="100"
             onChange={handleInput}
             value={breakfast}
+            required
           ></input>
         </div>
 
@@ -92,6 +141,7 @@ const FormItem = (props) => {
             maxLength="100"
             onChange={handleInput}
             value={lunch}
+            required
           ></input>
         </div>
 
@@ -104,6 +154,7 @@ const FormItem = (props) => {
             maxLength="100"
             onChange={handleInput}
             value={dinner}
+            required
           ></input>
         </div>
 
@@ -116,6 +167,7 @@ const FormItem = (props) => {
             maxLength="100"
             onChange={handleInput}
             value={exercise}
+            required
           ></input>
         </div>
 

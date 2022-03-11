@@ -1,8 +1,29 @@
+import { useState, useEffect } from "react";
 import "../assets/css/item.css";
-import Item from "./Item";
+import Moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { db } from "../firebase";
 
 const ListItems = (props) => {
-  const {items} = props
+  const [activity, setActivity] = useState([]);
+  const fetchActivity = async () => {
+    let temp = [];
+    await db
+      .collection("activity")
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          temp.push(doc.data());
+        });
+      });
+
+    setActivity(temp);
+  };
+
+  useEffect(() => {
+    fetchActivity();
+  }, []);
+
   return (
     <div className="grid-list">
       <div className="item-header">
@@ -25,9 +46,40 @@ const ListItems = (props) => {
           <h5>Action</h5>
         </div>
       </div>
-        {items.map((el) => {
-          return <div className="item-list" key = {el.id} data-id={el.id}><Item {...el} key = {el.id} /></div>;
-        })}
+      {activity.map((el) => {
+        return (
+          <div className="item-list" key={el.id} data-id={el.id}>
+            <div>{Moment(el.date.toDate()).format("DD-MMM-yyyy")}</div>
+            <div>{el.breakfast} </div>
+            <div>{el.lunch}</div>
+            <div>{el.dinner}</div>
+            <div>{el.exercise}</div>
+            <div className="col-action">
+              <button
+                onClick={() => {
+                  props.onSelectedItem(el.id);
+                }}
+              >
+                <FontAwesomeIcon icon="eye" />
+              </button>
+              <button
+                onClick={() => {
+                  props.onSelectedItem(el.id);
+                }}
+              >
+                <FontAwesomeIcon icon="edit" />
+              </button>
+              <button
+                onClick={() => {
+                  props.onSelectedItem(el.id);
+                }}
+              >
+                <FontAwesomeIcon icon="trash-alt" />
+              </button>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
