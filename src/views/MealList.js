@@ -11,7 +11,6 @@ const MealList = () => {
   const openModal = (id) => {
     setIsOpen(true);
     if (id !== null) {
-      console.log("type ", typeof id);
       console.log("Not Null, id = ", id);
     } else {
       console.log("Null, id =", id);
@@ -26,12 +25,10 @@ const MealList = () => {
     setIsOpen(false);
   };
 
-  const onAddNewItem = () => {};
 
-  const [selectedItems, setSelectedItem] = useState(0);
+  const [selectedItem, setSelectedItem] = useState(0);
   const handleSelectedItem = (value) => {
     setSelectedItem(value);
-    console.log(`id dd ${selectedItems}`)
     setIsOpen(true)
   };
   return (
@@ -40,13 +37,13 @@ const MealList = () => {
         <h2>
           <FontAwesomeIcon icon="utensils" /> Meal Lists
         </h2>
-        <button onClick={openModal} className="btn btn-default">
+        <button onClick={() => {  setSelectedItem(0); openModal(0);}} className="btn btn-default">
           <FontAwesomeIcon icon="plus" /> <span>Add Item</span>
         </button>
       </section>{" "}
       <ListItems onSelectedItem={handleSelectedItem}/>
-      <Modal isOpen={modalIsOpen}>
-        <FormItem onAddItem={onAddNewItem} onCloseModal={closeModal} />
+      <Modal isOpen={modalIsOpen} ariaHideApp={false}>
+        <FormItem onCloseModal={closeModal} itemID={selectedItem} />
       </Modal>
     </>
   );

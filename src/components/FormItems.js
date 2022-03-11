@@ -1,7 +1,9 @@
 import "../assets/css/form.css";
-import { useState, useEffect, useContext, useReducer } from "react";
+import { useState, useEffect, useReducer, useRef } from "react";
+import "../assets/css/item.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Moment from "moment";
 // import { registerLocale } from  "react-datepicker";
 // import th from 'date-fns/locale/th';
 // registerLocale('th', th)
@@ -16,7 +18,7 @@ const FormItem = (props) => {
   const [exercise, setExercise] = useState("");
   const [formValidate, setFormValidate] = useState(false);
   // const meal = useContext(DataContext);
-
+  const { itemID } = props;
   const handleInput = (e) => {
     const target = e.target;
     const value = target.value;
@@ -47,9 +49,8 @@ const FormItem = (props) => {
   };
 
   const [result, dispatch] = useReducer();
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let lastId = 0;
+
+  const findLastId = async (id) => {
     await db
       .collection("activity")
       .orderBy("id", "desc")
@@ -57,40 +58,75 @@ const FormItem = (props) => {
       .get()
       .then((docs) => {
         docs.forEach((doc) => {
-          lastId = doc.data().id;
-          console.log(doc.data().id);
+          id = doc.data().id;
         });
       });
+    return id;
+  };
+
+  const getSelectedItem = async (itemID) => {
+    let item = [];
+    await db
+      .collection("activity")
+      .where("id", "==", itemID)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          item = doc.data();
+          console.log(item);
+        });
+      })
+      .catch((error) => {
+        console.log(`Error : ${error}`);
+      });
+    await setItem(item);
+  };
+
+  const inpRefs = useRef({});
+  const setItem = (item) => {
+    console.log(`item : ${item}`);
+    inpRefs.current["date"].input.value = Moment(item.date.toDate()).format("DD/MM/yyyy");
+    inpRefs.current["breakfast"].value = item.breakfast;
+    inpRefs.current["lunch"].value = item.lunch;
+    inpRefs.current["dinner"].value = item.dinner;
+    inpRefs.current["exercise"].value = item.exercise;
+  };
+
+  const handleChange = (date) => {
+    setDate(date);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let lastId = 0;
+    lastId = await findLastId(lastId);
     console.log("lastId = ", lastId);
-    // let lastId = meal.item.length > 0 ? meal.item[meal.item.length - 1].id : 0;
-    // console.log( "lastId = ",lastId)
 
     // if (!formValidate) {
-      const itemData = {
-        id: lastId + 1,
-        date: selDate,
-        breakfast: breakfast,
-        lunch: lunch,
-        dinner: dinner,
-        exercise: exercise,
-      };
-      await db
-        .collection("activity")
-        .add({
-          ...itemData,
-        })
-        .then((docRef) => {
-          console.log("Document written with ID: ", docRef.id);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      // props.fetchNewData();
+    const itemData = {
+      id: lastId + 1,
+      date: selDate,
+      breakfast: breakfast,
+      lunch: lunch,
+      dinner: dinner,
+      exercise: exercise,
+    };
+    await db
+      .collection("activity")
+      .add({
+        ...itemData,
+      })
+      .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // props.fetchNewData();
 
-      console.log("Success", itemData);
-      clearData();
-      alert("Successfully !!");
-      props.onCloseModal();
+    console.log("Success", itemData);
+    clearData();
+    alert("Successfully !!");
+    props.onCloseModal();
     // } else {
     //   alert("Please enter data !!");
     // }
@@ -105,6 +141,12 @@ const FormItem = (props) => {
   //   setFormValidate(checkData);
   // }, [breakfast, lunch, dinner, exercise]);
 
+  useEffect(() => {
+    if (itemID !== 0) {
+      getSelectedItem(itemID);
+    }
+  });
+
   return (
     <div className="frame-form">
       <form id="form_meal" onSubmit={handleSubmit}>
@@ -115,7 +157,8 @@ const FormItem = (props) => {
             id="m-date"
             name="m-date"
             selected={selDate}
-            onChange={(date) => setDate(date)}
+            onChange={handleChange}
+            ref={(el) => (inpRefs.current["date"] = el)}
           />
         </div>
 
@@ -128,6 +171,7 @@ const FormItem = (props) => {
             maxLength="100"
             onChange={handleInput}
             value={breakfast}
+            ref={(el) => (inpRefs.current["breakfast"] = el)}
             required
           ></input>
         </div>
@@ -141,6 +185,7 @@ const FormItem = (props) => {
             maxLength="100"
             onChange={handleInput}
             value={lunch}
+            ref={(el) => (inpRefs.current["lunch"] = el)}
             required
           ></input>
         </div>
@@ -154,6 +199,7 @@ const FormItem = (props) => {
             maxLength="100"
             onChange={handleInput}
             value={dinner}
+            ref={(el) => (inpRefs.current["dinner"] = el)}
             required
           ></input>
         </div>
@@ -167,6 +213,7 @@ const FormItem = (props) => {
             maxLength="100"
             onChange={handleInput}
             value={exercise}
+            ref={(el) => (inpRefs.current["exercise"] = el)}
             required
           ></input>
         </div>
