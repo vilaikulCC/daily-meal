@@ -1,5 +1,5 @@
 import "../assets/css/form.css";
-import { useState, useEffect, useReducer, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "../assets/css/item.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,7 +7,6 @@ import Moment from "moment";
 // import { registerLocale } from  "react-datepicker";
 // import th from 'date-fns/locale/th';
 // registerLocale('th', th)
-import { DataContext } from "../data/DataContext";
 import { db } from "../firebase";
 
 const FormItem = (props) => {
@@ -16,9 +15,10 @@ const FormItem = (props) => {
   const [lunch, setLunch] = useState("");
   const [dinner, setDinner] = useState("");
   const [exercise, setExercise] = useState("");
-  const [formValidate, setFormValidate] = useState(false);
-  // const meal = useContext(DataContext);
-  const { itemID } = props;
+  // const [formValidate, setFormValidate] = useState(false);
+  // const [result, dispatch] = useReducer();
+  const inpRefs = useRef({});
+  const { itemId } = props;
   const handleInput = (e) => {
     const target = e.target;
     const value = target.value;
@@ -48,8 +48,6 @@ const FormItem = (props) => {
     setExercise("");
   };
 
-  const [result, dispatch] = useReducer();
-
   const findLastId = async (id) => {
     await db
       .collection("activity")
@@ -64,11 +62,11 @@ const FormItem = (props) => {
     return id;
   };
 
-  const getSelectedItem = async (itemID) => {
+  const getSelectedItem = async (itemId) => {
     let item = [];
     await db
       .collection("activity")
-      .where("id", "==", itemID)
+      .where("id", "==", itemId)
       .get()
       .then((docs) => {
         docs.forEach((doc) => {
@@ -82,50 +80,76 @@ const FormItem = (props) => {
     await setItem(item);
   };
 
-  const inpRefs = useRef({});
   const setItem = (item) => {
     console.log(`item : ${item}`);
-    inpRefs.current["date"].input.value = Moment(item.date.toDate()).format("DD/MM/yyyy");
+    inpRefs.current["date"].input.value = Moment(item.date.toDate()).format(
+      "DD/MM/yyyy"
+    );
     inpRefs.current["breakfast"].value = item.breakfast;
     inpRefs.current["lunch"].value = item.lunch;
     inpRefs.current["dinner"].value = item.dinner;
     inpRefs.current["exercise"].value = item.exercise;
   };
 
-  const handleChange = (date) => {
-    setDate(date);
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let lastId = 0;
-    lastId = await findLastId(lastId);
-    console.log("lastId = ", lastId);
+    if (itemId == 0) {
+      let lastId = 0;
+      lastId = await findLastId(lastId);
+      console.log("lastId = ", lastId);
 
-    // if (!formValidate) {
-    const itemData = {
-      id: lastId + 1,
-      date: selDate,
-      breakfast: breakfast,
-      lunch: lunch,
-      dinner: dinner,
-      exercise: exercise,
-    };
-    await db
-      .collection("activity")
-      .add({
-        ...itemData,
-      })
-      .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // props.fetchNewData();
+      // if (!formValidate) {
+      const itemData = {
+        id: lastId + 1,
+        date: selDate,
+        breakfast: breakfast,
+        lunch: lunch,
+        dinner: dinner,
+        exercise: exercise,
+      };
+      await db
+        .collection("activity")
+        .add({
+          ...itemData,
+        })
+        .then((docRef) => {
+          console.log("Document written with ID: ", docRef.id);
+          console.log("Add Document Success !!", itemData);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // props.fetchNewData();
+    } else {
+      // console.log(typeof(new Date(inpRefs.current["date"].value)))
+      const itemEdit = {
+        id: itemId,
+        date: selDate,
+        breakfast: inpRefs.current["breakfast"].value,
+        lunch: inpRefs.current["lunch"].value,
+        dinner: inpRefs.current["dinner"].value,
+        exercise: inpRefs.current["exercise"].value,
+      };
+      await db
+        .collection("activity")
+        .where("id", "==", itemId)
+        .get()
+        .then((docs) => {
+          docs.forEach((doc) => {
+            doc.ref.update({ ...itemEdit });
+          });
+          console.log("Document successfully updated!");
+          console.log("Edit Document Success !!", itemEdit);
+          itemId = 0;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // props.fetchNewData();
 
-    console.log("Success", itemData);
-    clearData();
-    alert("Successfully !!");
+      clearData();
+    }
+
     props.onCloseModal();
     // } else {
     //   alert("Please enter data !!");
@@ -142,8 +166,8 @@ const FormItem = (props) => {
   // }, [breakfast, lunch, dinner, exercise]);
 
   useEffect(() => {
-    if (itemID !== 0) {
-      getSelectedItem(itemID);
+    if (itemId !== 0) {
+      getSelectedItem(itemId);
     }
   });
 
@@ -157,7 +181,7 @@ const FormItem = (props) => {
             id="m-date"
             name="m-date"
             selected={selDate}
-            onChange={handleChange}
+            onChange={(date) => setDate(date)}
             ref={(el) => (inpRefs.current["date"] = el)}
           />
         </div>

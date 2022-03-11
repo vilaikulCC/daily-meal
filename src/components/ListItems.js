@@ -55,23 +55,23 @@ const ListItems = (props) => {
             <div>{el.dinner}</div>
             <div>{el.exercise}</div>
             <div className="col-action">
-              <button
+              {/* <button
                 onClick={() => {
-                  props.onSelectedItem(el.id);
+                  props.onSelectedItem(el.id,"1");
                 }}
               >
                 <FontAwesomeIcon icon="eye" />
-              </button>
+              </button> */}
               <button
                 onClick={() => {
-                  props.onSelectedItem(el.id);
+                  props.onSelectedItem(el.id,"1");
                 }}
               >
                 <FontAwesomeIcon icon="edit" />
               </button>
               <button
                 onClick={() => {
-                  props.onSelectedItem(el.id);
+                  props.onSelectedItem(el.id,"2");
                 }}
               >
                 <FontAwesomeIcon icon="trash-alt" />

@@ -4,6 +4,7 @@ import "../assets/css/main.css";
 import { useState } from "react";
 import FormItem from "../components/FormItems";
 import Modal from "react-modal/lib/components/Modal";
+import { db } from "../firebase";
 
 const MealList = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -25,25 +26,51 @@ const MealList = () => {
     setIsOpen(false);
   };
 
-
   const [selectedItem, setSelectedItem] = useState(0);
-  const handleSelectedItem = (value) => {
-    setSelectedItem(value);
-    setIsOpen(true)
+  const handleSelectedItem = (value, action) => {
+    if (action == 1) {
+      setSelectedItem(value);
+      setIsOpen(true);
+    } else if (action == 2) {
+      deleteItem(value);
+    }
   };
+
+  const deleteItem = async (id) => {
+    await db
+      .collection("activity")
+      .where("id", "==", id)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          doc.ref.delete();
+        })
+        console.log("Document successfully deleted!");
+      })
+      .catch((error) => {
+        console.error("Error removing document: ", error);
+      });
+  };
+
   return (
     <>
       <section className="section-title">
         <h2>
           <FontAwesomeIcon icon="utensils" /> Meal Lists
         </h2>
-        <button onClick={() => {  setSelectedItem(0); openModal(0);}} className="btn btn-default">
+        <button
+          onClick={() => {
+            setSelectedItem(0);
+            openModal(0);
+          }}
+          className="btn btn-default"
+        >
           <FontAwesomeIcon icon="plus" /> <span>Add Item</span>
         </button>
       </section>{" "}
-      <ListItems onSelectedItem={handleSelectedItem}/>
+      <ListItems onSelectedItem={handleSelectedItem} />
       <Modal isOpen={modalIsOpen} ariaHideApp={false}>
-        <FormItem onCloseModal={closeModal} itemID={selectedItem} />
+        <FormItem onCloseModal={closeModal} itemId={selectedItem} />
       </Modal>
     </>
   );
