@@ -17,7 +17,7 @@ const FormItem = (props) => {
   // const [formValidate, setFormValidate] = useState(false);
   // const [result, dispatch] = useReducer();
   const inpRefs = useRef({});
-  const { itemId } = props;
+  let { itemId } = props;
   const handleInput = (e) => {
     const target = e.target;
     const value = target.value;
