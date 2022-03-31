@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../assets/css/item.css";
-import Moment from "moment";
+import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { db } from "../firebase";
 
@@ -49,7 +49,7 @@ const ListItems = (props) => {
       {activity.map((el) => {
         return (
           <div className="item-list" key={el.id} data-id={el.id}>
-            <div>{Moment(el.date.toDate()).format("DD-MMM-yyyy")}</div>
+            <div>{format(el.date.toDate(), "dd-MMM-yyyy")}</div>
             <div>{el.breakfast} </div>
             <div>{el.lunch}</div>
             <div>{el.dinner}</div>

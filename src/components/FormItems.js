@@ -3,11 +3,10 @@ import { useState, useEffect, useRef } from "react";
 import "../assets/css/item.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Moment from "moment";
-// import { registerLocale } from  "react-datepicker";
-// import th from 'date-fns/locale/th';
-// registerLocale('th', th)
+
 import { db } from "../firebase";
+import { format } from "date-fns";
+// import th from "date-fns/locale/th";
 
 const FormItem = (props) => {
   const [selDate, setDate] = useState(new Date());
@@ -82,8 +81,9 @@ const FormItem = (props) => {
 
   const setItem = (item) => {
     console.log(`item : ${item}`);
-    inpRefs.current["date"].input.value = Moment(item.date.toDate()).format(
-      "DD/MM/yyyy"
+    inpRefs.current["date"].input.value = format(
+      item.date.toDate(),
+      "dd/MM/yyyy"
     );
     inpRefs.current["breakfast"].value = item.breakfast;
     inpRefs.current["lunch"].value = item.lunch;
@@ -93,7 +93,7 @@ const FormItem = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (itemId == 0) {
+    if (itemId === 0) {
       let lastId = 0;
       lastId = await findLastId(lastId);
       console.log("lastId = ", lastId);
